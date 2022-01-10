@@ -1,4 +1,4 @@
-package io.goodforgod.template;
+package io.goodforgod.jackson.module.datetime.configuration;
 
 /**
  * @author GoodforGod
