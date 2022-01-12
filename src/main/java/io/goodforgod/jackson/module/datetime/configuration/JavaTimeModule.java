@@ -15,8 +15,9 @@ import com.fasterxml.jackson.datatype.jsr310.deser.*;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
+import io.goodforgod.jackson.module.datetime.configuration.deserializer.Deserializers;
 import io.goodforgod.jackson.module.datetime.configuration.deserializer.InstantISODeserializer;
-
+import io.goodforgod.jackson.module.datetime.configuration.deserializer.OffsetTimeISODeserializer;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
@@ -28,20 +29,47 @@ import java.time.format.DateTimeFormatter;
  */
 public class JavaTimeModule extends SimpleModule {
 
-    public JavaTimeModule() {
+    public JavaTimeModule(DateTimeFormatter instantFormat,
+                          DateTimeFormatter offsetDateTimeFormat,
+                          DateTimeFormatter zonedDateTimeFormat,
+                          DateTimeFormatter offsetTimeFormat,
+                          DateTimeFormatter localDateTimeFormat,
+                          DateTimeFormatter localDateFormat,
+                          DateTimeFormatter localTimeFormat,
+                          DateTimeFormatter yearFormat,
+                          DateTimeFormatter yearMonthFormat,
+                          DateTimeFormatter monthDayFormat) {
         super(PackageVersion.VERSION);
 
         // First deserializers
+        final InstantDeserializer<Instant> instantDeserializer = getInstantDeserializer(instantFormat);
+        final InstantDeserializer<OffsetDateTime> offsetDateTimeDeserializer = getOffsetDateTimeDeserializer(
+                offsetDateTimeFormat);
+        final InstantDeserializer<ZonedDateTime> zonedDateTimeDeserializer = getZonedDateTimeDeserializer(zonedDateTimeFormat);
+        final OffsetTimeDeserializer offsetTimeDeserializer = getOffsetTimeDeserializer(offsetTimeFormat);
+        final LocalDateTimeDeserializer localDateTimeDeserializer = getLocalDateTimeDeserializer(localDateTimeFormat);
+        final LocalDateDeserializer localDateDeserializer = getLocalDateDeserializer(localDateFormat);
+        final LocalTimeDeserializer localTimeDeserializer = getLocalTimeDeserializer(localTimeFormat);
+        final YearDeserializer yearDeserializer = getYearDeserializer(yearFormat);
+        final YearMonthDeserializer yearMonthDeserializer = getYearMonthDeserializer(yearMonthFormat);
+        final MonthDayDeserializer monthDayDeserializer = getMonthDayDeserializer(monthDayFormat);
+
         addDeserializer(Instant.class, InstantDeserializer.INSTANT);
-        addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
         addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
+        addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
         addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
         addDeserializer(Year.class, YearDeserializer.INSTANCE);
         addDeserializer(YearMonth.class, YearMonthDeserializer.INSTANCE);
         addDeserializer(MonthDay.class, MonthDayDeserializer.INSTANCE);
+
+        // Other deserializers
+        addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
+        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
+        addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
+        addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
 
         // then serializers:
         addSerializer(Instant.class, InstantSerializer.INSTANCE);
@@ -54,12 +82,6 @@ public class JavaTimeModule extends SimpleModule {
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
         addSerializer(MonthDay.class, MonthDaySerializer.INSTANCE);
-
-        // Other deserializers
-        addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
-        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
-        addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
-        addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
 
         // Other serializers
         addSerializer(Period.class, new ToStringSerializer(Period.class));
@@ -89,83 +111,98 @@ public class JavaTimeModule extends SimpleModule {
         addKeyDeserializer(ZoneOffset.class, ZoneOffsetKeyDeserializer.INSTANCE);
     }
 
-    public JavaTimeModule(DateTimeFormatter instantFormat,
-                          DateTimeFormatter localDateFormat,
-                          DateTimeFormatter localTimeFormat,
-                          DateTimeFormatter localDateTimeFormat,
-                          DateTimeFormatter offsetTimeFormat,
-                          DateTimeFormatter offsetDateTimeFormat,
-                          DateTimeFormatter zonedDateTimeFormat,
-                          DateTimeFormatter yearFormat,
-                          DateTimeFormatter yearMonthFormat,
-                          DateTimeFormatter monthDayFormat) {
-        super(PackageVersion.VERSION);
-
-        // First deserializers
-        final InstantDeserializer instantDeserializer;
-        if(DateTimeFormatter.ISO_INSTANT == instantFormat) {
-            instantDeserializer = InstantDeserializer.INSTANT;
-        } else if(DateTimeFormatters.ISO_INSTANT == instantFormat) {
-            instantDeserializer = new InstantISODeserializer(InstantDeserializer.INSTANT, instantFormat);
+    protected InstantDeserializer<Instant> getInstantDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_INSTANT == formatter) {
+            return InstantDeserializer.INSTANT;
+        } else if (DateTimeFormatters.ISO_INSTANT == formatter) {
+            return Deserializers.INSTANT;
         } else {
-            instantDeserializer = new InstantISODeserializer(InstantDeserializer.INSTANT, instantFormat);
+            return new InstantISODeserializer<>(InstantDeserializer.INSTANT, formatter);
         }
+    }
 
-        addDeserializer(Instant.class, InstantDeserializer.INSTANT);
-        addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
-        addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
-        addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
-        addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
-        addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
-        addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
-        addDeserializer(Year.class, YearDeserializer.INSTANCE);
-        addDeserializer(YearMonth.class, YearMonthDeserializer.INSTANCE);
-        addDeserializer(MonthDay.class, MonthDayDeserializer.INSTANCE);
+    protected InstantDeserializer<OffsetDateTime> getOffsetDateTimeDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_OFFSET_DATE_TIME == formatter) {
+            return InstantDeserializer.OFFSET_DATE_TIME;
+        } else if (DateTimeFormatters.ISO_OFFSET_DATE_TIME == formatter) {
+            return Deserializers.OFFSET_DATE_TIME;
+        } else {
+            return new InstantISODeserializer<>(InstantDeserializer.OFFSET_DATE_TIME, formatter);
+        }
+    }
 
-        // then serializers:
-        addSerializer(Instant.class, InstantSerializer.INSTANCE);
-        addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
-        addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE);
-        addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
-        addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE);
-        addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);
-        addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE);
-        addSerializer(Year.class, YearSerializer.INSTANCE);
-        addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
-        addSerializer(MonthDay.class, MonthDaySerializer.INSTANCE);
+    protected InstantDeserializer<ZonedDateTime> getZonedDateTimeDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_ZONED_DATE_TIME == formatter) {
+            return InstantDeserializer.ZONED_DATE_TIME;
+        } else if (DateTimeFormatters.ISO_ZONED_DATE_TIME == formatter) {
+            return Deserializers.ZONED_DATE_TIME;
+        } else {
+            return new InstantISODeserializer<>(InstantDeserializer.ZONED_DATE_TIME, formatter);
+        }
+    }
 
-        // Other deserializers
-        addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
-        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
-        addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
-        addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
+    protected OffsetTimeDeserializer getOffsetTimeDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_OFFSET_TIME == formatter) {
+            return OffsetTimeDeserializer.INSTANCE;
+        } else if (DateTimeFormatters.ISO_OFFSET_TIME == formatter) {
+            return Deserializers.OFFSET_TIME;
+        } else {
+            return new OffsetTimeISODeserializer(formatter);
+        }
+    }
 
-        // Other serializers
-        addSerializer(Period.class, new ToStringSerializer(Period.class));
-        addSerializer(Duration.class, DurationSerializer.INSTANCE);
-        addSerializer(ZoneId.class, new ZoneIdSerializer());
-        addSerializer(ZoneOffset.class, new ToStringSerializer(ZoneOffset.class));
+    protected LocalDateTimeDeserializer getLocalDateTimeDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_LOCAL_DATE_TIME == formatter) {
+            return LocalDateTimeDeserializer.INSTANCE;
+        } else if (DateTimeFormatters.ISO_LOCAL_DATE_TIME == formatter) {
+            return Deserializers.LOCAL_DATE_TIME;
+        } else {
+            return new LocalDateTimeDeserializer(formatter);
+        }
+    }
 
-        // key serializers
-        addKeySerializer(ZonedDateTime.class, ZonedDateTimeKeySerializer.INSTANCE);
+    protected LocalDateDeserializer getLocalDateDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_LOCAL_DATE == formatter) {
+            return LocalDateDeserializer.INSTANCE;
+        } else if (DateTimeFormatters.ISO_LOCAL_DATE == formatter) {
+            return Deserializers.LOCAL_DATE;
+        } else {
+            return new LocalDateDeserializer(formatter);
+        }
+    }
 
-        // key deserializers
-        addKeyDeserializer(ZonedDateTime.class, ZonedDateTimeKeyDeserializer.INSTANCE);
-        addKeyDeserializer(LocalDateTime.class, LocalDateTimeKeyDeserializer.INSTANCE);
-        addKeyDeserializer(LocalDate.class, LocalDateKeyDeserializer.INSTANCE);
-        addKeyDeserializer(LocalTime.class, LocalTimeKeyDeserializer.INSTANCE);
-        addKeyDeserializer(OffsetDateTime.class, OffsetDateTimeKeyDeserializer.INSTANCE);
-        addKeyDeserializer(OffsetTime.class, OffsetTimeKeyDeserializer.INSTANCE);
+    protected LocalTimeDeserializer getLocalTimeDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatter.ISO_LOCAL_TIME == formatter) {
+            return LocalTimeDeserializer.INSTANCE;
+        } else if (DateTimeFormatters.ISO_LOCAL_TIME == formatter) {
+            return Deserializers.LOCAL_TIME;
+        } else {
+            return new LocalTimeDeserializer(formatter);
+        }
+    }
 
-        // Other key deserializers
-        addKeyDeserializer(Duration.class, DurationKeyDeserializer.INSTANCE);
-        addKeyDeserializer(Instant.class, InstantKeyDeserializer.INSTANCE);
-        addKeyDeserializer(MonthDay.class, MonthDayKeyDeserializer.INSTANCE);
-        addKeyDeserializer(Period.class, PeriodKeyDeserializer.INSTANCE);
-        addKeyDeserializer(Year.class, YearKeyDeserializer.INSTANCE);
-        addKeyDeserializer(YearMonth.class, YearMonthKeyDeserializer.INSTANCE);
-        addKeyDeserializer(ZoneId.class, ZoneIdKeyDeserializer.INSTANCE);
-        addKeyDeserializer(ZoneOffset.class, ZoneOffsetKeyDeserializer.INSTANCE);
+    protected YearDeserializer getYearDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatters.ISO_LOCAL_DATE_TIME == formatter) {
+            return Deserializers.YEAR;
+        } else {
+            return new YearDeserializer(formatter);
+        }
+    }
+
+    protected YearMonthDeserializer getYearMonthDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatters.ISO_LOCAL_DATE == formatter) {
+            return Deserializers.YEAR_MONTH;
+        } else {
+            return new YearMonthDeserializer(formatter);
+        }
+    }
+
+    protected MonthDayDeserializer getMonthDayDeserializer(DateTimeFormatter formatter) {
+        if (DateTimeFormatters.ISO_LOCAL_TIME == formatter) {
+            return Deserializers.MONTH_DAY;
+        } else {
+            return new MonthDayDeserializer(formatter);
+        }
     }
 
     @Override
