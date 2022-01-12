@@ -1,7 +1,6 @@
 package io.goodforgod.jackson.module.datetime.configuration.deserializer;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
-
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
@@ -29,6 +28,4 @@ public class InstantISODeserializer<T extends Temporal> extends InstantDeseriali
                                   DateTimeFormatter f) {
         super(base, f);
     }
-
-
 }
