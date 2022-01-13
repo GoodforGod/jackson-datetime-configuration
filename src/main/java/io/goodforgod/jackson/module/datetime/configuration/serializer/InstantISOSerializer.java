@@ -1,9 +1,6 @@
 package io.goodforgod.jackson.module.datetime.configuration.serializer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -12,9 +9,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class InstantISOSerializer extends InstantSerializer {
 
-    public InstantISOSerializer(InstantSerializer base,
-                                Boolean useTimestamp,
-                                DateTimeFormatter formatter) {
-        super(base, useTimestamp, formatter);
+    public InstantISOSerializer(DateTimeFormatter formatter) {
+        super(InstantSerializer.INSTANCE, null, formatter);
     }
 }

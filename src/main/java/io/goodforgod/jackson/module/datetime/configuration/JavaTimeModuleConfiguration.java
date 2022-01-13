@@ -45,6 +45,20 @@ public class JavaTimeModuleConfiguration {
         return configuration;
     }
 
+    public JavaTimeModule getModule() {
+        return new JavaTimeModule(
+                instantFormat,
+                offsetDateTimeFormat,
+                zonedDateTimeFormat,
+                offsetTimeFormat,
+                localDateTimeFormat,
+                localDateFormat,
+                localTimeFormat,
+                yearFormat,
+                yearMonthFormat,
+                monthDayFormat);
+    }
+
     public DateTimeFormatter getInstantFormat() {
         return instantFormat;
     }
