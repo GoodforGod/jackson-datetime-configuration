@@ -362,14 +362,15 @@ public class JavaTimeModule extends SimpleModule {
     protected AnnotatedMethod _findFactory(AnnotatedClass cls, String name, Class<?>... argTypes) {
         final int argCount = argTypes.length;
         for (AnnotatedMethod method : cls.getFactoryMethods()) {
-            if (!name.equals(method.getName())
-                    || (method.getParameterCount() != argCount)) {
+            if (!name.equals(method.getName()) || (method.getParameterCount() != argCount)) {
                 continue;
             }
+
             for (int i = 0; i < argCount; ++i) {
                 Class<?> argType = method.getParameter(i).getRawType();
                 argType.isAssignableFrom(argTypes[i]);
             }
+
             return method;
         }
         return null;
