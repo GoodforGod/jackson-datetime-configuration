@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import java.time.Period;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -15,11 +16,10 @@ public final class Serializers {
 
     private Serializers() {}
 
-    public static final InstantSerializer INSTANT = new InstantISOSerializer(ISO_INSTANT);
     public static final OffsetDateTimeISOSerializer OFFSET_DATE_TIME = new OffsetDateTimeISOSerializer(ISO_OFFSET_DATE_TIME);
     public static final ZonedDateTimeSerializer ZONED_DATE_TIME = new ZonedDateTimeSerializer(ISO_ZONED_DATE_TIME);
 
-    public static final OffsetTimeSerializer OFFSET_TIME = new OffsetTimeISOSerializer(ISO_OFFSET_TIME);
+    public static final OffsetTimeISOSerializer OFFSET_TIME = new OffsetTimeISOSerializer(ISO_OFFSET_TIME);
     public static final LocalDateTimeSerializer LOCAL_DATE_TIME = new LocalDateTimeSerializer(ISO_LOCAL_DATE_TIME);
     public static final LocalDateSerializer LOCAL_DATE = new LocalDateSerializer(ISO_LOCAL_DATE);
     public static final LocalTimeSerializer LOCAL_TIME = new LocalTimeSerializer(ISO_LOCAL_TIME);
@@ -31,4 +31,9 @@ public final class Serializers {
     public static final ToStringSerializer PERIOD = new ToStringSerializer(Period.class);
     public static final ZoneIdSerializer ZONE_ID = new ZoneIdSerializer();
     public static final ToStringSerializer ZONE_OFFSET = new ToStringSerializer(ZoneOffset.class);
+
+    public static final OffsetTimeISOSerializer JAVA_ISO_OFFSET_TIME = new OffsetTimeISOSerializer(
+            DateTimeFormatter.ISO_OFFSET_TIME);
+    public static final ZonedDateTimeSerializer JAVA_ISO_ZONED_DATE_TIME = new ZonedDateTimeSerializer(
+            DateTimeFormatter.ISO_ZONED_DATE_TIME);
 }

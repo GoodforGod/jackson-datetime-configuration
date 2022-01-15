@@ -34,9 +34,9 @@ import java.time.format.DateTimeFormatter;
 public class JavaTimeModule extends SimpleModule {
 
     public JavaTimeModule(DateTimeFormatter instantFormat,
+                          DateTimeFormatter offsetTimeFormat,
                           DateTimeFormatter offsetDateTimeFormat,
                           DateTimeFormatter zonedDateTimeFormat,
-                          DateTimeFormatter offsetTimeFormat,
                           DateTimeFormatter localDateTimeFormat,
                           DateTimeFormatter localDateFormat,
                           DateTimeFormatter localTimeFormat,
@@ -47,10 +47,10 @@ public class JavaTimeModule extends SimpleModule {
 
         // First deserializers
         final InstantDeserializer<Instant> instantDeserializer = getInstantDeserializer(instantFormat);
+        final OffsetTimeDeserializer offsetTimeDeserializer = getOffsetTimeDeserializer(offsetTimeFormat);
         final InstantDeserializer<OffsetDateTime> offsetDateTimeDeserializer = getOffsetDateTimeDeserializer(
                 offsetDateTimeFormat);
         final InstantDeserializer<ZonedDateTime> zonedDateTimeDeserializer = getZonedDateTimeDeserializer(zonedDateTimeFormat);
-        final OffsetTimeDeserializer offsetTimeDeserializer = getOffsetTimeDeserializer(offsetTimeFormat);
         final LocalDateTimeDeserializer localDateTimeDeserializer = getLocalDateTimeDeserializer(localDateTimeFormat);
         final LocalDateDeserializer localDateDeserializer = getLocalDateDeserializer(localDateFormat);
         final LocalTimeDeserializer localTimeDeserializer = getLocalTimeDeserializer(localTimeFormat);
@@ -77,9 +77,9 @@ public class JavaTimeModule extends SimpleModule {
 
         // then serializers:
         final InstantSerializer instantSerializer = getInstantSerializer(instantFormat);
+        final OffsetTimeSerializer offsetTimeSerializer = getOffsetTimeSerializer(offsetTimeFormat);
         final OffsetDateTimeSerializer offsetDateTimeSerializer = getOffsetDateTimeSerializer(offsetDateTimeFormat);
         final ZonedDateTimeSerializer zonedDateTimeSerializer = getZonedDateTimeSerializer(zonedDateTimeFormat);
-        final OffsetTimeSerializer offsetTimeSerializer = getOffsetTimeSerializer(offsetTimeFormat);
         final LocalDateTimeSerializer localDateTimeSerializer = getLocalDateTimeSerializer(localDateTimeFormat);
         final LocalDateSerializer localDateSerializer = getLocalDateSerializer(localDateFormat);
         final LocalTimeSerializer localTimeSerializer = getLocalTimeSerializer(localTimeFormat);
@@ -129,8 +129,6 @@ public class JavaTimeModule extends SimpleModule {
     protected InstantDeserializer<Instant> getInstantDeserializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_INSTANT == formatter) {
             return InstantDeserializer.INSTANT;
-        } else if (DateTimeFormatters.ISO_INSTANT == formatter) {
-            return Deserializers.INSTANT;
         } else {
             return new InstantISODeserializer<>(InstantDeserializer.INSTANT, formatter);
         }
@@ -138,7 +136,7 @@ public class JavaTimeModule extends SimpleModule {
 
     protected InstantDeserializer<OffsetDateTime> getOffsetDateTimeDeserializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_OFFSET_DATE_TIME == formatter) {
-            return InstantDeserializer.OFFSET_DATE_TIME;
+            return Deserializers.JAVA_ISO_OFFSET_DATE_TIME;
         } else if (DateTimeFormatters.ISO_OFFSET_DATE_TIME == formatter) {
             return Deserializers.OFFSET_DATE_TIME;
         } else {
@@ -148,7 +146,7 @@ public class JavaTimeModule extends SimpleModule {
 
     protected InstantDeserializer<ZonedDateTime> getZonedDateTimeDeserializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_ZONED_DATE_TIME == formatter) {
-            return InstantDeserializer.ZONED_DATE_TIME;
+            return Deserializers.JAVA_ISO_ZONED_DATE_TIME;
         } else if (DateTimeFormatters.ISO_ZONED_DATE_TIME == formatter) {
             return Deserializers.ZONED_DATE_TIME;
         } else {
@@ -223,8 +221,6 @@ public class JavaTimeModule extends SimpleModule {
     protected InstantSerializer getInstantSerializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_INSTANT == formatter) {
             return InstantSerializer.INSTANCE;
-        } else if (DateTimeFormatters.ISO_INSTANT == formatter) {
-            return Serializers.INSTANT;
         } else {
             return new InstantISOSerializer(formatter);
         }
@@ -242,7 +238,7 @@ public class JavaTimeModule extends SimpleModule {
 
     protected ZonedDateTimeSerializer getZonedDateTimeSerializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_ZONED_DATE_TIME == formatter) {
-            return ZonedDateTimeSerializer.INSTANCE;
+            return Serializers.JAVA_ISO_ZONED_DATE_TIME;
         } else if (DateTimeFormatters.ISO_ZONED_DATE_TIME == formatter) {
             return Serializers.ZONED_DATE_TIME;
         } else {
@@ -252,7 +248,7 @@ public class JavaTimeModule extends SimpleModule {
 
     protected OffsetTimeSerializer getOffsetTimeSerializer(DateTimeFormatter formatter) {
         if (DateTimeFormatter.ISO_OFFSET_TIME == formatter) {
-            return OffsetTimeSerializer.INSTANCE;
+            return Serializers.JAVA_ISO_OFFSET_TIME;
         } else if (DateTimeFormatters.ISO_OFFSET_TIME == formatter) {
             return Serializers.OFFSET_TIME;
         } else {

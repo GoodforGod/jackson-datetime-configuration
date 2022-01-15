@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.*;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -50,4 +51,22 @@ public final class Deserializers {
     public static final YearDeserializer YEAR = new YearDeserializer(ISO_YEAR);
     public static final YearMonthDeserializer YEAR_MONTH = new YearMonthDeserializer(ISO_YEAR_MONTH);
     public static final MonthDayDeserializer MONTH_DAY = new MonthDayDeserializer(ISO_MONTH_DAY);
+
+    public static final InstantISODeserializer<OffsetDateTime> JAVA_ISO_OFFSET_DATE_TIME = new InstantISODeserializer<>(
+            OffsetDateTime.class,
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME,
+            OffsetDateTime::from,
+            a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
+            a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
+            null,
+            true);
+
+    public static final InstantISODeserializer<ZonedDateTime> JAVA_ISO_ZONED_DATE_TIME = new InstantISODeserializer<>(
+            ZonedDateTime.class,
+            DateTimeFormatter.ISO_ZONED_DATE_TIME,
+            ZonedDateTime::from,
+            a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
+            a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
+            null,
+            true);
 }
