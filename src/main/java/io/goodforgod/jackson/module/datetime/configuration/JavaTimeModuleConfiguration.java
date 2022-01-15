@@ -1,6 +1,8 @@
 package io.goodforgod.jackson.module.datetime.configuration;
 
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -8,13 +10,23 @@ import java.time.format.DateTimeFormatter;
  */
 public class JavaTimeModuleConfiguration {
 
+    /**
+     * Forces {@link java.time.format.ResolverStyle#STRICT} for all formatters setters
+     */
+    private boolean forceResolverStrict = false;
+
+    /**
+     * Forces {@link IsoChronology#INSTANCE} for all formatters setters
+     */
+    private boolean forceIsoChronology = false;
+
     private DateTimeFormatter instantFormat = DateTimeFormatters.ISO_INSTANT;
-    private DateTimeFormatter localDateFormat = DateTimeFormatters.ISO_LOCAL_DATE;
-    private DateTimeFormatter localTimeFormat = DateTimeFormatters.ISO_LOCAL_TIME;
-    private DateTimeFormatter localDateTimeFormat = DateTimeFormatters.ISO_LOCAL_DATE_TIME;
     private DateTimeFormatter offsetTimeFormat = DateTimeFormatters.ISO_OFFSET_TIME;
     private DateTimeFormatter offsetDateTimeFormat = DateTimeFormatters.ISO_OFFSET_DATE_TIME;
     private DateTimeFormatter zonedDateTimeFormat = DateTimeFormatters.ISO_ZONED_DATE_TIME;
+    private DateTimeFormatter localDateTimeFormat = DateTimeFormatters.ISO_LOCAL_DATE_TIME;
+    private DateTimeFormatter localDateFormat = DateTimeFormatters.ISO_LOCAL_DATE;
+    private DateTimeFormatter localTimeFormat = DateTimeFormatters.ISO_LOCAL_TIME;
     private DateTimeFormatter yearFormat = DateTimeFormatters.ISO_YEAR;
     private DateTimeFormatter yearMonthFormat = DateTimeFormatters.ISO_YEAR_MONTH;
     private DateTimeFormatter monthDayFormat = DateTimeFormatters.ISO_MONTH_DAY;
@@ -35,28 +47,56 @@ public class JavaTimeModuleConfiguration {
         final JavaTimeModuleConfiguration configuration = new JavaTimeModuleConfiguration();
 
         configuration.setInstantFormat(DateTimeFormatter.ISO_INSTANT);
-        configuration.setLocalDateFormat(DateTimeFormatter.ISO_LOCAL_DATE);
-        configuration.setLocalTimeFormat(DateTimeFormatter.ISO_LOCAL_TIME);
-        configuration.setLocalDateTimeFormat(DateTimeFormatter.ISO_DATE_TIME);
-        configuration.setOffsetTimeFormat(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        configuration.setOffsetTimeFormat(DateTimeFormatter.ISO_OFFSET_TIME);
         configuration.setOffsetDateTimeFormat(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         configuration.setZonedDateTimeFormat(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        configuration.setLocalDateTimeFormat(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        configuration.setLocalDateFormat(DateTimeFormatter.ISO_LOCAL_DATE);
+        configuration.setLocalTimeFormat(DateTimeFormatter.ISO_LOCAL_TIME);
 
         return configuration;
     }
 
     public JavaTimeModule getModule() {
         return new JavaTimeModule(
-                instantFormat,
-                offsetDateTimeFormat,
-                zonedDateTimeFormat,
-                offsetTimeFormat,
-                localDateTimeFormat,
-                localDateFormat,
-                localTimeFormat,
-                yearFormat,
-                yearMonthFormat,
-                monthDayFormat);
+                getInstantFormat(),
+                getOffsetTimeFormat(),
+                getOffsetDateTimeFormat(),
+                getZonedDateTimeFormat(),
+                getLocalDateTimeFormat(),
+                getLocalDateFormat(),
+                getLocalTimeFormat(),
+                getYearFormat(),
+                getYearMonthFormat(),
+                getMonthDayFormat());
+    }
+
+    public boolean isForceResolverStrict() {
+        return forceResolverStrict;
+    }
+
+    /**
+     * Forces {@link java.time.format.ResolverStyle#STRICT} for all formatters setters
+     * 
+     * @param forceResolverStrict to set
+     */
+    public JavaTimeModuleConfiguration setForceResolverStrict(boolean forceResolverStrict) {
+        this.forceResolverStrict = forceResolverStrict;
+        return this;
+    }
+
+    public boolean isForceIsoChronology() {
+        return forceIsoChronology;
+    }
+
+    /**
+     * Forces {@link IsoChronology#INSTANCE} for all formatters setters
+     * 
+     * @param forceIsoChronology to set
+     */
+    public JavaTimeModuleConfiguration setForceIsoChronology(boolean forceIsoChronology) {
+        this.forceIsoChronology = forceIsoChronology;
+        return this;
     }
 
     public DateTimeFormatter getInstantFormat() {
@@ -64,7 +104,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setInstantFormat(DateTimeFormatter instantFormat) {
-        this.instantFormat = instantFormat;
+        this.instantFormat = applyRestrictions(instantFormat);
         return this;
     }
 
@@ -77,7 +117,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setLocalDateFormat(DateTimeFormatter localDateFormat) {
-        this.localDateFormat = localDateFormat;
+        this.localDateFormat = applyRestrictions(localDateFormat);
         return this;
     }
 
@@ -90,7 +130,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setLocalTimeFormat(DateTimeFormatter localTimeFormat) {
-        this.localTimeFormat = localTimeFormat;
+        this.localTimeFormat = applyRestrictions(localTimeFormat);
         return this;
     }
 
@@ -103,7 +143,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setLocalDateTimeFormat(DateTimeFormatter localDateTimeFormat) {
-        this.localDateTimeFormat = localDateTimeFormat;
+        this.localDateTimeFormat = applyRestrictions(localDateTimeFormat);
         return this;
     }
 
@@ -116,7 +156,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setOffsetTimeFormat(DateTimeFormatter offsetTimeFormat) {
-        this.offsetTimeFormat = offsetTimeFormat;
+        this.offsetTimeFormat = applyRestrictions(offsetTimeFormat);
         return this;
     }
 
@@ -129,7 +169,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setOffsetDateTimeFormat(DateTimeFormatter offsetDateTimeFormat) {
-        this.offsetDateTimeFormat = offsetDateTimeFormat;
+        this.offsetDateTimeFormat = applyRestrictions(offsetDateTimeFormat);
         return this;
     }
 
@@ -142,7 +182,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setZonedDateTimeFormat(DateTimeFormatter zonedDateTimeFormat) {
-        this.zonedDateTimeFormat = zonedDateTimeFormat;
+        this.zonedDateTimeFormat = applyRestrictions(zonedDateTimeFormat);
         return this;
     }
 
@@ -155,7 +195,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setYearFormat(DateTimeFormatter yearFormat) {
-        this.yearFormat = yearFormat;
+        this.yearFormat = applyRestrictions(yearFormat);
         return this;
     }
 
@@ -168,7 +208,7 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setYearMonthFormat(DateTimeFormatter yearMonthFormat) {
-        this.yearMonthFormat = yearMonthFormat;
+        this.yearMonthFormat = applyRestrictions(yearMonthFormat);
         return this;
     }
 
@@ -181,11 +221,20 @@ public class JavaTimeModuleConfiguration {
     }
 
     public JavaTimeModuleConfiguration setMonthDayFormat(DateTimeFormatter monthDayFormat) {
-        this.monthDayFormat = monthDayFormat;
+        this.monthDayFormat = applyRestrictions(monthDayFormat);
         return this;
     }
 
     public JavaTimeModuleConfiguration setMonthDayFormat(String monthDayPattern) {
         return setMonthDayFormat(DateTimeFormatter.ofPattern(monthDayPattern));
+    }
+
+    private DateTimeFormatter applyRestrictions(DateTimeFormatter formatter) {
+        DateTimeFormatter processedFormatter = formatter;
+        if (forceIsoChronology)
+            processedFormatter = processedFormatter.withChronology(IsoChronology.INSTANCE);
+        if (forceResolverStrict)
+            processedFormatter = processedFormatter.withResolverStyle(ResolverStyle.STRICT);
+        return processedFormatter;
     }
 }
