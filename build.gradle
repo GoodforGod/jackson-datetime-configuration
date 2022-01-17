@@ -56,9 +56,9 @@ publishing {
             from components.java
 
             pom {
-                name = "jackson-module-datetime-configuration"
+                name = "Jackson DateTime Configuration"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = "Jackson DateTime Module Configuration."
+                description = "Jackson DateTime Module with proper Configuration."
 
                 license {
                     name = "Apache License 2.0"
