@@ -16,22 +16,15 @@ public final class Deserializers {
 
     private Deserializers() {}
 
-    public static final InstantISODeserializer<Instant> INSTANT = new InstantISODeserializer<>(
-            Instant.class,
-            ISO_INSTANT,
-            Instant::from,
-            a -> Instant.ofEpochMilli(a.value),
-            a -> Instant.ofEpochSecond(a.integer, a.fraction),
-            null,
-            true);
-
     public static final InstantISODeserializer<OffsetDateTime> OFFSET_DATE_TIME = new InstantISODeserializer<>(
             OffsetDateTime.class,
             ISO_OFFSET_DATE_TIME,
             OffsetDateTime::from,
             a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            null,
+            (d, z) -> (d.isEqual(OffsetDateTime.MIN) || d.isEqual(OffsetDateTime.MAX)
+                    ? d
+                    : d.withOffsetSameInstant(z.getRules().getOffset(d.toLocalDateTime()))),
             true);
 
     public static final InstantISODeserializer<ZonedDateTime> ZONED_DATE_TIME = new InstantISODeserializer<>(
@@ -40,7 +33,7 @@ public final class Deserializers {
             ZonedDateTime::from,
             a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            null,
+            ZonedDateTime::withZoneSameInstant,
             true);
 
     public static final OffsetTimeDeserializer OFFSET_TIME = new OffsetTimeISODeserializer(ISO_OFFSET_TIME);
@@ -58,7 +51,9 @@ public final class Deserializers {
             OffsetDateTime::from,
             a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            null,
+            (d, z) -> (d.isEqual(OffsetDateTime.MIN) || d.isEqual(OffsetDateTime.MAX)
+                    ? d
+                    : d.withOffsetSameInstant(z.getRules().getOffset(d.toLocalDateTime()))),
             true);
 
     public static final InstantISODeserializer<ZonedDateTime> JAVA_ISO_ZONED_DATE_TIME = new InstantISODeserializer<>(
@@ -67,6 +62,6 @@ public final class Deserializers {
             ZonedDateTime::from,
             a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            null,
+            ZonedDateTime::withZoneSameInstant,
             true);
 }

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  * @author Anton Kurako (GoodforGod)
  * @since 26.04.2021
  */
-class OffsetTimeDeserializerTests extends Assertions {
+class OffsetTimeCustomDeserializerTests extends Assertions {
 
     static class User {
 
@@ -40,9 +40,11 @@ class OffsetTimeDeserializerTests extends Assertions {
     }
 
     private static final OffsetTime TIME = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    private static final String VALUE = "00:00:00.000Z";
+    private static final String VALUE = "00-00-00Z";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
+    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+            .setOffsetTimeFormat("HH-mm-ssXXX")
+            .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 

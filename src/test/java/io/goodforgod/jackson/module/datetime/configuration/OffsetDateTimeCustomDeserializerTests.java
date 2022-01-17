@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.time.DateTimeException;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +15,12 @@ import org.junit.jupiter.api.Test;
  * @author Anton Kurako (GoodforGod)
  * @since 26.04.2021
  */
-class OffsetTimeDeserializerTests extends Assertions {
+class OffsetDateTimeCustomDeserializerTests extends Assertions {
 
     static class User {
 
         private String name;
-        private OffsetTime value;
+        private OffsetDateTime value;
 
         public String getName() {
             return name;
@@ -30,19 +30,24 @@ class OffsetTimeDeserializerTests extends Assertions {
             this.name = name;
         }
 
-        public OffsetTime getValue() {
+        public OffsetDateTime getValue() {
             return value;
         }
 
-        public void setValue(OffsetTime value) {
+        public void setValue(OffsetDateTime value) {
             this.value = value;
         }
     }
 
-    private static final OffsetTime TIME = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    private static final String VALUE = "00:00:00.000Z";
+    private static final OffsetDateTime TIME = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.of("UTC"));
+    private static final String VALUE = "1970:01:01T00:00:00Z";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
+    private static final OffsetDateTime TIME_MOSCOW = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.of("+03:00"));
+    private static final String VALUE_MOSCOW = "1970:01:01T03:00:00+03:00";
+
+    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+            .setOffsetDateTimeFormat("uuuu:MM:dd'T'HH:mm:ssXXX")
+            .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
@@ -65,6 +70,27 @@ class OffsetTimeDeserializerTests extends Assertions {
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
+    }
+
+    @Test
+    void serializationIsValidForIsoMoscow() throws JsonProcessingException {
+        final User user = new User();
+        user.setName("Bob");
+        user.setValue(TIME_MOSCOW);
+
+        final String json = adapter.writeValueAsString(user);
+        assertNotNull(json);
+        assertTrue(json.contains("\"value\":\"" + VALUE_MOSCOW + "\""), json);
+    }
+
+    @Test
+    void deserializationIsValidForIsoMoscow() throws JsonProcessingException {
+        final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE_MOSCOW + "\"}";
+
+        final User user = adapter.readValue(json, User.class);
+        assertNotNull(user);
+        assertEquals("Bob", user.getName());
+        assertEquals(TIME_MOSCOW, user.getValue());
     }
 
     @Test

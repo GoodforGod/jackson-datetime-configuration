@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import java.time.DateTimeException;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +12,12 @@ import org.junit.jupiter.api.Test;
  * @author Anton Kurako (GoodforGod)
  * @since 26.04.2021
  */
-class OffsetTimeDeserializerTests extends Assertions {
+class ZonedDateTimeCustomDeserializerTests extends Assertions {
 
     static class User {
 
         private String name;
-        private OffsetTime value;
+        private ZonedDateTime value;
 
         public String getName() {
             return name;
@@ -30,19 +27,27 @@ class OffsetTimeDeserializerTests extends Assertions {
             this.name = name;
         }
 
-        public OffsetTime getValue() {
+        public ZonedDateTime getValue() {
             return value;
         }
 
-        public void setValue(OffsetTime value) {
+        public void setValue(ZonedDateTime value) {
             this.value = value;
         }
     }
 
-    private static final OffsetTime TIME = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    private static final String VALUE = "00:00:00.000Z";
+    private static final ZonedDateTime TIME = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.of("UTC"));
+    private static final String VALUE = "1970:01:01T00:00:00Z[UTC]";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
+    private static final ZonedDateTime TIME_NON_UTC = ZonedDateTime
+            .ofInstant(LocalDateTime.ofInstant(Instant.EPOCH, ZoneId.of("Europe/Paris")), ZoneOffset.UTC,
+                    ZoneId.of("Europe/Paris"));
+
+    private static final String VALUE_NON_UTC = "1970:01:01T02:00:00+01:00[Europe/Paris]";
+
+    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+            .setZonedDateTimeFormat("uuuu:MM:dd'T'HH:mm:ssXXX['['VV']']")
+            .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
@@ -65,6 +70,27 @@ class OffsetTimeDeserializerTests extends Assertions {
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
+    }
+
+    @Test
+    void serializationIsValidForIsoNonUtc() throws JsonProcessingException {
+        final User user = new User();
+        user.setName("Bob");
+        user.setValue(TIME_NON_UTC);
+
+        final String json = adapter.writeValueAsString(user);
+        assertNotNull(json);
+        assertTrue(json.contains("\"value\":\"" + VALUE_NON_UTC + "\""), json);
+    }
+
+    @Test
+    void deserializationIsValidForIsoNonUtc() throws JsonProcessingException {
+        final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE_NON_UTC + "\"}";
+
+        final User user = adapter.readValue(json, User.class);
+        assertNotNull(user);
+        assertEquals("Bob", user.getName());
+        assertEquals(TIME_NON_UTC, user.getValue());
     }
 
     @Test

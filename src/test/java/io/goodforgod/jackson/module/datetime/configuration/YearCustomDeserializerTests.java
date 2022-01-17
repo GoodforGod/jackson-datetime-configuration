@@ -1,26 +1,21 @@
 package io.goodforgod.jackson.module.datetime.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import java.time.DateTimeException;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.Year;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Anton Kurako (GoodforGod)
- * @since 26.04.2021
+ * @since 27.04.2021
  */
-class OffsetTimeDeserializerTests extends Assertions {
+class YearCustomDeserializerTests extends Assertions {
 
     static class User {
 
         private String name;
-        private OffsetTime value;
+        private Year value;
 
         public String getName() {
             return name;
@@ -30,24 +25,24 @@ class OffsetTimeDeserializerTests extends Assertions {
             this.name = name;
         }
 
-        public OffsetTime getValue() {
+        public Year getValue() {
             return value;
         }
 
-        public void setValue(OffsetTime value) {
+        public void setValue(Year value) {
             this.value = value;
         }
     }
 
-    private static final OffsetTime TIME = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    private static final String VALUE = "00:00:00.000Z";
+    private static final Year TIME = Year.of(2000);
+    private static final String VALUE = "2000-";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+            .setYearFormat("uuuu-")
+            .getModule());
 
     @Test
-    void serializationIsValidForIso() throws JsonProcessingException {
+    void serializationIsValid() throws JsonProcessingException {
         final User user = new User();
         user.setName("Bob");
         user.setValue(TIME);
@@ -58,7 +53,7 @@ class OffsetTimeDeserializerTests extends Assertions {
     }
 
     @Test
-    void deserializationIsValidForIso() throws JsonProcessingException {
+    void deserializationFromStringIsValid() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
         final User user = adapter.readValue(json, User.class);
@@ -68,14 +63,14 @@ class OffsetTimeDeserializerTests extends Assertions {
     }
 
     @Test
-    void deserializationFails() {
-        final String json = "{\"name\":\"Bob\",\"value\":\"1970-01-01 03:00\"}";
+    void deserializationFails() throws JsonProcessingException {
+        final String json = "{\"name\":\"Bob\",\"value\":\"NOT_TIME\"}";
 
         try {
             adapter.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
-            assertTrue(e.getCause() instanceof DateTimeException);
+            assertFalse(e.getMessage().isEmpty());
         }
     }
 }

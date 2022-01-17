@@ -1,6 +1,7 @@
 package io.goodforgod.jackson.module.datetime.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.time.DateTimeException;
@@ -45,7 +46,8 @@ class OffsetDateTimeDeserializerTests extends Assertions {
     private static final String VALUE_MOSCOW = "1970-01-01T03:00:00.000+03:00";
 
     private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
     @Test
     void serializationIsValidForIso() throws JsonProcessingException {
