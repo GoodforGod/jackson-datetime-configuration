@@ -5,7 +5,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
 
-Jackson DateTime module for java.time.* package with proper Configuration.
+Jackson DateTime module for [java.time.*](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/package-summary.html) package with proper Configuration.
 
 Library try to fix poor [standard Jackson JSR310 DateTime module](https://github.com/FasterXML/jackson-modules-java8/blob/2.14/datetime/src/main/java/com/fasterxml/jackson/datatype/jsr310/JavaTimeModule.java),
 now you can change formatters for Date/Times
