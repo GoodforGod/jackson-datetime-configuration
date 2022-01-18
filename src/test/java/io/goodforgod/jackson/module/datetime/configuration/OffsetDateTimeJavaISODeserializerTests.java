@@ -45,7 +45,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
     private static final OffsetDateTime TIME_MOSCOW = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.of("+03:00"));
     private static final String VALUE_MOSCOW = "1970-01-01T03:00:00+03:00";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
@@ -55,7 +55,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE + "\""), json);
     }
@@ -64,7 +64,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
     void deserializationIsValidForIso() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -76,7 +76,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME_MOSCOW);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE_MOSCOW + "\""), json);
     }
@@ -85,7 +85,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
     void deserializationIsValidForIsoMoscow() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE_MOSCOW + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME_MOSCOW, user.getValue());
@@ -96,7 +96,7 @@ class OffsetDateTimeJavaISODeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":\"1970-01-01 03:00\"}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertTrue(e.getCause() instanceof DateTimeException);

@@ -45,7 +45,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
 
     private static final String VALUE_NON_UTC = "1970:01:01T02:00:00+01:00[Europe/Paris]";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
             .setZonedDateTimeFormat("uuuu:MM:dd'T'HH:mm:ssXXX['['VV']']")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -57,7 +57,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE + "\""), json);
     }
@@ -66,7 +66,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
     void deserializationIsValidForIso() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -78,7 +78,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME_NON_UTC);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE_NON_UTC + "\""), json);
     }
@@ -87,7 +87,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
     void deserializationIsValidForIsoNonUtc() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE_NON_UTC + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME_NON_UTC, user.getValue());
@@ -98,7 +98,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":\"1970-01-01 03:00\"}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertTrue(e.getCause() instanceof DateTimeException);

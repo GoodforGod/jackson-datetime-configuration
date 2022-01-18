@@ -39,7 +39,7 @@ class LocalTimeJavaISODeserializerTests extends Assertions {
     private static final LocalTime TIME = LocalTime.MIN;
     private static final String VALUE = "00:00:00";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     @Test
@@ -48,7 +48,7 @@ class LocalTimeJavaISODeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE + "\""), json);
     }
@@ -57,7 +57,7 @@ class LocalTimeJavaISODeserializerTests extends Assertions {
     void deserializationIsValidForIso() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -68,7 +68,7 @@ class LocalTimeJavaISODeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":\"1970-01-01 03:00\"}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertTrue(e.getCause() instanceof DateTimeException);

@@ -37,7 +37,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
     private static final MonthDay TIME = MonthDay.of(1, 1);
     private static final String VALUE = "01-01";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {
@@ -45,7 +45,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE + "\""), json);
     }
@@ -54,7 +54,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
     void deserializationIsValid() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -64,7 +64,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
     void deserializationIsValidForStringNumber() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -75,7 +75,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":\"NOT_TIME\"}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertFalse(e.getMessage().isEmpty());
@@ -87,7 +87,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":[\"NOT_TIME\"]}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertFalse(e.getMessage().isEmpty());

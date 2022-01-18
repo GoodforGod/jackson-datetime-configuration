@@ -37,7 +37,7 @@ class ZoneOffsetDeserializerTests extends Assertions {
     private static final ZoneOffset TIME = ZoneOffset.of("+02:00");
     private static final String VALUE = "+02:00";
 
-    private final ObjectMapper adapter = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {
@@ -45,7 +45,7 @@ class ZoneOffsetDeserializerTests extends Assertions {
         user.setName("Bob");
         user.setValue(TIME);
 
-        final String json = adapter.writeValueAsString(user);
+        final String json = mapper.writeValueAsString(user);
         assertNotNull(json);
         assertTrue(json.contains("\"value\":\"" + VALUE + "\""), json);
     }
@@ -54,7 +54,7 @@ class ZoneOffsetDeserializerTests extends Assertions {
     void deserializationIsValid() throws JsonProcessingException {
         final String json = "{\"name\":\"Bob\",\"value\":\"" + VALUE + "\"}";
 
-        final User user = adapter.readValue(json, User.class);
+        final User user = mapper.readValue(json, User.class);
         assertNotNull(user);
         assertEquals("Bob", user.getName());
         assertEquals(TIME, user.getValue());
@@ -65,7 +65,7 @@ class ZoneOffsetDeserializerTests extends Assertions {
         final String json = "{\"name\":\"Bob\",\"value\":\"NOT_TIME\"}";
 
         try {
-            adapter.readValue(json, User.class);
+            mapper.readValue(json, User.class);
             fail("Should not happen");
         } catch (JsonProcessingException e) {
             assertFalse(e.getMessage().isEmpty());
