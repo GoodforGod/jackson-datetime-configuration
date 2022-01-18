@@ -37,8 +37,9 @@ dependencies {
 
 ## Configuration
 
-JavaTimeModule library provides uses same [Package.VERSION](https://github.com/GoodforGod/jackson-datetime-configuration/blob/master/src/main/java/io/goodforgod/jackson/module/datetime/configuration/JavaTimeModule.java#L46)
-as
+JavaTimeModule library provides uses same [Package.VERSION](https://github.com/GoodforGod/jackson-datetime-configuration/blob/master/src/main/java/io/goodforgod/jackson/module/datetime/configuration/JavaTimeModule.java#L41)
+as [Jackson Module](https://github.com/FasterXML/jackson-modules-java8/blob/2.14/datetime/src/main/java/com/fasterxml/jackson/datatype/jsr310/JavaTimeModule.java#L114), 
+this is done on purpose cause modules are exclusive.
 
 Example how to create JavaTimeModuleConfiguration with [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) formatters:
 ```java
