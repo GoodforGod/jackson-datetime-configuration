@@ -50,6 +50,14 @@ spotless {
     }
 }
 
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "goodforgod"
+        property "sonar.projectKey", "GoodforGod_jackson-datetime-configuration"
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -58,7 +66,7 @@ publishing {
             pom {
                 name = "Jackson DateTime Configuration"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = "Jackson DateTime Module with proper Configuration."
+                description = "Jackson DateTime module for java.time.* package with proper Configuration."
 
                 license {
                     name = "Apache License 2.0"
