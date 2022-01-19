@@ -12,7 +12,7 @@ now you can change formatters for Date/Times
 and library is using [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) formatters by default.
 
 Features:
-- Default configuration with formatters [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) (or default Java ISO8601 formatters)
+- Default configuration with formatters [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) (or [default Java ISO](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html) formatters)
 - Module configuration with getter\setters (can easily be used in framework configurations)
 
 ## Dependency :rocket:
@@ -46,7 +46,7 @@ Example how to create JavaTimeModuleConfiguration with [ISO8601 with millis prec
 JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofISO();
 ```
 
-Example how to create JavaTimeModuleConfiguration with default ISO8601 Java formatters:
+Example how to create JavaTimeModuleConfiguration with [default Java ISO](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html) formatters:
 ```java
 JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofJavaISO();
 ```
@@ -84,10 +84,10 @@ mapper.registerModule(module);
 
 ### Hints
 
-In case you want proper serialization for Date & Times and don't want to adjust ZoneOffset when deserializing, configure ObjectMapper as follow:
+For proper Date & Times serialization, you probably don't want to adjust ZoneOffset when deserializing and serializing as longs, then configure ObjectMapper as follows:
 ```java
 ObjectMapper mapper = new ObjectMapper()
-        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)               // Don't write dates as long
+        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)               // Don't write dates as longs
         .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);    // Don't change ZoneOffset to local
 ```
 
