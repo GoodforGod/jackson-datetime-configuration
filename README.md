@@ -12,7 +12,7 @@ now you can change formatters for Date/Times
 and library is using [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) formatters by default.
 
 Features:
-- Default configuration with formatters [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) (or [default Java ISO](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html) formatters)
+- Default configuration with formatters [ISO8601 with millis precision](https://goodforgod.dev/posts/2/)
 - Module configuration with getter\setters (can easily be used in framework configurations)
 
 ## Dependency :rocket:
@@ -22,7 +22,7 @@ Compatible with Java 8+.
 **Gradle**
 ```groovy
 dependencies {
-    implementation "io.goodforgod:jackson-datetime-configuration:1.0.0"
+    implementation "io.goodforgod:jackson-datetime-configuration:2.0.0"
 }
 ```
 
@@ -31,7 +31,7 @@ dependencies {
 <dependency>
     <groupId>io.goodforgod</groupId>
     <artifactId>jackson-datetime-configuration</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -43,29 +43,24 @@ this is done on purpose cause modules are exclusive.
 
 Example how to create JavaTimeModuleConfiguration with [ISO8601 with millis precision](https://goodforgod.dev/posts/2/) formatters:
 ```java
-JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofISO();
-```
-
-Example how to create JavaTimeModuleConfiguration with [default Java ISO](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html) formatters:
-```java
-JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofJavaISO();
+JavaTimeModuleConfiguration configuration = new JavaTimeModuleConfiguration();
 ```
 
 Example of all available configurations for JavaTimeModuleConfiguration.
 ```java
-JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofISO()
-                    .setInstantFormat("uuuu-MM-dd")                                 // Set Instant formatter
-                    .setOffsetTimeFormat("HH:mm:ssXXX")                             // Set OffsetTime formatter
-                    .setOffsetDateTimeFormat("uuuu-MM-dd'T'HH:mm:ssXXX")            // Set OffsetDateTime formatter
-                    .setZonedDateTimeFormat("uuuu-MM-dd'T'HH:mm:ssXXX['['VV']']")   // Set ZonedDateTime formatter
-                    .setLocalDateTimeFormat("uuuu-MM-dd'T'HH:mm:ss")                // Set LocalDateTime formatter
-                    .setLocalDateFormat("uuuu-MM-dd")                               // Set LocalDate formatter
-                    .setLocalTimeFormat("HH:mm:ssXXX")                              // Set LocalTime formatter
-                    .setYearFormat("uuuu")                                          // Set Year formatter
-                    .setYearMonthFormat("uuuu-MM")                                  // Set YearMonth formatter
-                    .setMonthDayFormat("MM-dd")                                     // Set MonthDay formatter
-                    .setForceIsoChronology(true)                                    // Forces IsoChronology for all formatters
-                    .setForceResolverStrict(true);                                  // Forces ResolverStyle#STRICT for all formatters
+JavaTimeModuleConfiguration configuration = new JavaTimeModuleConfiguration()
+                    .setInstantFormat("uuuu-MM-dd")                                     // Set Instant formatter
+                    .setOffsetTimeFormat("HH:mm:ss[.SSS]XXX")                           // Set OffsetTime formatter
+                    .setOffsetDateTimeFormat("uuuu-MM-dd'T'HH:mm:ss[.SSS]XXX")          // Set OffsetDateTime formatter
+                    .setZonedDateTimeFormat("uuuu-MM-dd'T'HH:mm:ss[.SSS]XXX['['VV']']") // Set ZonedDateTime formatter
+                    .setLocalDateTimeFormat("uuuu-MM-dd'T'HH:mm:ss[.SSS]")              // Set LocalDateTime formatter
+                    .setLocalDateFormat("uuuu-MM-dd")                                   // Set LocalDate formatter
+                    .setLocalTimeFormat("HH:mm:ss[.SSS]XXX")                            // Set LocalTime formatter
+                    .setYearFormat("uuuu")                                              // Set Year formatter
+                    .setYearMonthFormat("uuuu-MM")                                      // Set YearMonth formatter
+                    .setMonthDayFormat("MM-dd")                                         // Set MonthDay formatter
+                    .setForceIsoChronology(true)                                        // Forces IsoChronology for all formatters
+                    .setForceResolverStrict(true);                                      // Forces ResolverStyle#STRICT for all formatters
 ```
 
 ### Module
@@ -73,7 +68,7 @@ JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofISO()
 Example how to create configuration, module and register module for ObjectMapper.
 
 ```java
-JavaTimeModuleConfiguration configuration = JavaTimeModuleConfiguration.ofISO();
+JavaTimeModuleConfiguration configuration = new JavaTimeModuleConfiguration();
 configuration.setLocalTimeFormat("HH-mm-ss");
 
 JavaTimeModule module = configuration.getModule();
