@@ -37,7 +37,7 @@ class YearJavaISODeserializerTests extends Assertions {
     private static final Year TIME = Year.of(2000);
     private static final String VALUE = "2000";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {

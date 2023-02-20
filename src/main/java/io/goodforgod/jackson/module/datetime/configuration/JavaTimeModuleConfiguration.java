@@ -20,55 +20,19 @@ public class JavaTimeModuleConfiguration {
      */
     private boolean forceIsoChronology = false;
 
-    private DateTimeFormatter instantFormat = DateTimeFormatters.ISO_INSTANT;
-    private DateTimeFormatter offsetTimeFormat = DateTimeFormatters.ISO_OFFSET_TIME;
-    private DateTimeFormatter offsetDateTimeFormat = DateTimeFormatters.ISO_OFFSET_DATE_TIME;
-    private DateTimeFormatter zonedDateTimeFormat = DateTimeFormatters.ISO_ZONED_DATE_TIME;
-    private DateTimeFormatter localDateTimeFormat = DateTimeFormatters.ISO_LOCAL_DATE_TIME;
-    private DateTimeFormatter localDateFormat = DateTimeFormatters.ISO_LOCAL_DATE;
-    private DateTimeFormatter localTimeFormat = DateTimeFormatters.ISO_LOCAL_TIME;
-    private DateTimeFormatter yearFormat = DateTimeFormatters.ISO_YEAR;
-    private DateTimeFormatter yearMonthFormat = DateTimeFormatters.ISO_YEAR_MONTH;
-    private DateTimeFormatter monthDayFormat = DateTimeFormatters.ISO_MONTH_DAY;
-
-    protected JavaTimeModuleConfiguration() {}
-
-    /**
-     * @return configuration with improved ISO formatters {@link DateTimeFormatters}
-     */
-    public static JavaTimeModuleConfiguration ofISO() {
-        return new JavaTimeModuleConfiguration();
-    }
-
-    /**
-     * @return configuration with default Java formatters {@link DateTimeFormatter}
-     */
-    public static JavaTimeModuleConfiguration ofJavaISO() {
-        final JavaTimeModuleConfiguration configuration = new JavaTimeModuleConfiguration();
-
-        configuration.setInstantFormat(DateTimeFormatter.ISO_INSTANT);
-        configuration.setOffsetTimeFormat(DateTimeFormatter.ISO_OFFSET_TIME);
-        configuration.setOffsetDateTimeFormat(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        configuration.setZonedDateTimeFormat(DateTimeFormatter.ISO_ZONED_DATE_TIME);
-        configuration.setLocalDateTimeFormat(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        configuration.setLocalDateFormat(DateTimeFormatter.ISO_LOCAL_DATE);
-        configuration.setLocalTimeFormat(DateTimeFormatter.ISO_LOCAL_TIME);
-
-        return configuration;
-    }
+    private DateTimeFormatter instantFormat;
+    private DateTimeFormatter offsetTimeFormat;
+    private DateTimeFormatter offsetDateTimeFormat;
+    private DateTimeFormatter zonedDateTimeFormat;
+    private DateTimeFormatter localDateTimeFormat;
+    private DateTimeFormatter localDateFormat;
+    private DateTimeFormatter localTimeFormat;
+    private DateTimeFormatter yearFormat;
+    private DateTimeFormatter yearMonthFormat;
+    private DateTimeFormatter monthDayFormat;
 
     public JavaTimeModule getModule() {
-        return new JavaTimeModule(
-                getInstantFormat(),
-                getOffsetTimeFormat(),
-                getOffsetDateTimeFormat(),
-                getZonedDateTimeFormat(),
-                getLocalDateTimeFormat(),
-                getLocalDateFormat(),
-                getLocalTimeFormat(),
-                getYearFormat(),
-                getYearMonthFormat(),
-                getMonthDayFormat());
+        return new JavaTimeModule(this);
     }
 
     public boolean isForceResolverStrict() {
@@ -77,7 +41,7 @@ public class JavaTimeModuleConfiguration {
 
     /**
      * Forces {@link java.time.format.ResolverStyle#STRICT} for all formatters setters
-     * 
+     *
      * @param forceResolverStrict to set
      */
     public JavaTimeModuleConfiguration setForceResolverStrict(boolean forceResolverStrict) {
@@ -91,7 +55,7 @@ public class JavaTimeModuleConfiguration {
 
     /**
      * Forces {@link IsoChronology#INSTANCE} for all formatters setters
-     * 
+     *
      * @param forceIsoChronology to set
      */
     public JavaTimeModuleConfiguration setForceIsoChronology(boolean forceIsoChronology) {

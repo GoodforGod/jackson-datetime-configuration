@@ -40,7 +40,7 @@ class LocalTimeDeserializerTests extends Assertions {
     private static final String VALUE = "00:00:00.000";
     private static final String VALUE_SHORT = "00:00:00";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     @Test

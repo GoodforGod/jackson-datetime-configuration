@@ -45,7 +45,7 @@ class OffsetDateTimeCustomDeserializerTests extends Assertions {
     private static final OffsetDateTime TIME_MOSCOW = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.of("+03:00"));
     private static final String VALUE_MOSCOW = "1970:01:01T03:00:00+03:00";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
             .setOffsetDateTimeFormat("uuuu:MM:dd'T'HH:mm:ssXXX")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)

@@ -37,7 +37,7 @@ class ZoneOffsetJavaISODeserializerTests extends Assertions {
     private static final ZoneOffset TIME = ZoneOffset.of("+02:00");
     private static final String VALUE = "+02:00";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {

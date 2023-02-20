@@ -39,7 +39,7 @@ class LocalTimeCustomDeserializerTests extends Assertions {
     private static final LocalTime TIME = LocalTime.MIN;
     private static final String VALUE = "00-00-00";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
             .setLocalTimeFormat("HH-mm-ss")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
