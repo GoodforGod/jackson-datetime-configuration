@@ -8,6 +8,7 @@ import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,9 @@ class OffsetTimeJavaISODeserializerTests extends Assertions {
     private static final OffsetTime TIME = OffsetTime.of(LocalTime.of(0, 0, 0), ZoneOffset.UTC);
     private static final String VALUE = "00:00:00Z";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
+            .setOffsetTimeFormat(DateTimeFormatter.ISO_OFFSET_TIME)
+            .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 

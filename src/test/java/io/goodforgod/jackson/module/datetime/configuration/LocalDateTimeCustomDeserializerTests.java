@@ -41,7 +41,7 @@ class LocalDateTimeCustomDeserializerTests extends Assertions {
     private static final LocalDateTime TIME = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
     private static final String VALUE = "1970:01:01T00:00:00.000";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
             .setLocalDateTimeFormat("uuuu:MM:dd'T'HH:mm:ss.SSS")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

@@ -37,7 +37,7 @@ class MonthDayJavaISODeserializerTests extends Assertions {
     private static final MonthDay TIME = MonthDay.of(1, 1);
     private static final String VALUE = "01-01";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {

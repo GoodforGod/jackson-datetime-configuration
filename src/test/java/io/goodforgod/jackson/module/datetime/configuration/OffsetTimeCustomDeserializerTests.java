@@ -42,7 +42,7 @@ class OffsetTimeCustomDeserializerTests extends Assertions {
     private static final OffsetTime TIME = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
     private static final String VALUE = "00-00-00Z";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
             .setOffsetTimeFormat("HH-mm-ssXXX")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)

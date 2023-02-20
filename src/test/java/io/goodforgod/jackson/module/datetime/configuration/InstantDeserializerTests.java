@@ -41,7 +41,7 @@ class InstantDeserializerTests extends Assertions {
     private static final Instant TIME = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.of("UTC")).toInstant();
     private static final String VALUE = "1970-01-01T00:00:00Z";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     @Test

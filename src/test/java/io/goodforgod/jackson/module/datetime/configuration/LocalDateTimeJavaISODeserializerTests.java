@@ -7,6 +7,7 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +42,9 @@ class LocalDateTimeJavaISODeserializerTests extends Assertions {
     private static final LocalDateTime TIME = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
     private static final String VALUE = "1970-01-01T00:00:00";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofJavaISO().getModule())
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
+            .setLocalDateTimeFormat(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     @Test

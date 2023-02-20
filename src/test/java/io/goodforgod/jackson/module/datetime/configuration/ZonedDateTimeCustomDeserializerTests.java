@@ -45,7 +45,7 @@ class ZonedDateTimeCustomDeserializerTests extends Assertions {
 
     private static final String VALUE_NON_UTC = "1970:01:01T02:00:00+01:00[Europe/Paris]";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO()
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration()
             .setZonedDateTimeFormat("uuuu:MM:dd'T'HH:mm:ssXXX['['VV']']")
             .getModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)

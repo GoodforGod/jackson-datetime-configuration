@@ -35,7 +35,7 @@ public class JavaTimeModule extends SimpleModule {
         final InstantDeserializer<Instant> instantDeserializer = getInstantDeserializer(configuration.getInstantFormat());
         final OffsetTimeDeserializer offsetTimeDeserializer = getOffsetTimeDeserializer(configuration.getOffsetTimeFormat());
         final InstantDeserializer<OffsetDateTime> offsetDateTimeDeserializer = getOffsetDateTimeDeserializer(
-                configuration.getOffsetTimeFormat());
+                configuration.getOffsetDateTimeFormat());
         final InstantDeserializer<ZonedDateTime> zonedDateTimeDeserializer = getZonedDateTimeDeserializer(
                 configuration.getZonedDateTimeFormat());
         final LocalDateTimeDeserializer localDateTimeDeserializer = getLocalDateTimeDeserializer(

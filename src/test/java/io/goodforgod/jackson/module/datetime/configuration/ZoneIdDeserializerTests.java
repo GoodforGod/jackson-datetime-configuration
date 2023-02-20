@@ -37,7 +37,7 @@ class ZoneIdDeserializerTests extends Assertions {
     private static final ZoneId TIME = ZoneId.of("UTC");
     private static final String VALUE = "UTC";
 
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(JavaTimeModuleConfiguration.ofISO().getModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModuleConfiguration().getModule());
 
     @Test
     void serializationIsValid() throws JsonProcessingException {
