@@ -4,6 +4,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_jackson-datetime-configuration&metric=ncloc)](https://sonarcloud.io/dashboard?id=GoodforGod_jackson-datetime-configuration)
 
 Jackson DateTime module for [java.time.*](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/package-summary.html) package with proper Configuration.
 
