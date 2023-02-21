@@ -10,6 +10,6 @@ import java.time.format.DateTimeFormatter;
 public class InstantISOSerializer extends InstantSerializer {
 
     public InstantISOSerializer(DateTimeFormatter formatter) {
-        super(InstantSerializer.INSTANCE, null, formatter);
+        super(InstantSerializer.INSTANCE, null, false, formatter);
     }
 }

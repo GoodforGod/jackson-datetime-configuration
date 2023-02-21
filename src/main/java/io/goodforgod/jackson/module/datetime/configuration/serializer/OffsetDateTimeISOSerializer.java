@@ -10,6 +10,6 @@ import java.time.format.DateTimeFormatter;
 public class OffsetDateTimeISOSerializer extends OffsetDateTimeSerializer {
 
     public OffsetDateTimeISOSerializer(DateTimeFormatter formatter) {
-        super(OffsetDateTimeSerializer.INSTANCE, null, formatter);
+        super(OffsetDateTimeSerializer.INSTANCE, null, false, formatter);
     }
 }
